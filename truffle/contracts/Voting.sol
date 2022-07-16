@@ -25,8 +25,7 @@ contract Voting is Ownable {
         ProposalsRegistrationStarted,
         ProposalsRegistrationEnded,
         VotingSessionStarted,
-        VotingSessionEnded,
-        VotesTallied
+        VotingSessionEnded
     }
 
     WorkflowStatus public workflowStatus;

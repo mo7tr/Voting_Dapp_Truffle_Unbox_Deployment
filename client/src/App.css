@@ -20,35 +20,6 @@
   height: 100%;
 }
 
-code {
-  display: block;
-  white-space: pre-wrap;
-  padding: 1.2rem 2rem;
-  border-radius: 1rem;
-  background-color: var(--light-gray);
-  font-size: 1.4rem;
-}
-
-code span {
-  transition: all 0.3s;
-}
-
-code span.primary-color {
-  color: var(--primary-color);
-}
-
-code span.secondary-color {
-  color: var(--secondary-color);
-}
-
-code span.dim-color {
-  color: var(--gray);
-}
-
-code span.flash {
-  background-color: var(--flash-color);
-}
-
 details {
   margin: 1.6rem 0;
   padding: 0.5rem 2rem 0.5rem 0;
@@ -109,7 +80,7 @@ hr {
   border-radius: 0 1rem 1rem 0;
 }
 
-#App .container .demo .contract-container .btns>* {
+#App .container .demo .contract-container .btns > * {
   width: 12rem;
   display: flex;
   align-items: center;
@@ -122,7 +93,7 @@ hr {
   cursor: pointer;
 }
 
-#App .container .demo .contract-container .btns>*:hover {
+#App .container .demo .contract-container .btns > *:hover {
   background-color: var(--dark-gray);
 }
 
