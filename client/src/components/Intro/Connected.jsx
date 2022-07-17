@@ -2,15 +2,11 @@ import { useState, useEffect } from "react";
 
 function Connected(props) {
   const [workflowStatus, setWorkflowStatus] = useState("");
-  const [isWl, setIsWl] = useState(null);
+  const [isWl, setIsWl] = useState(false);
 
   useEffect(() => {
-    console.log("props.whitelist", props.whitelist);
     for (let i = 0; i < props.whitelist.length; i++) {
-      if (
-        props.whitelist[i].returnValues._voterAddress ===
-        props.userAddress.toString()
-      ) {
+      if (props.whitelist[i] === props.userAddress.toString()) {
         setIsWl(true);
       } else {
         setIsWl(false);
@@ -19,22 +15,22 @@ function Connected(props) {
 
     switch (props.workflowStatus) {
       case "0":
-        setWorkflowStatus("Registering Voters");
+        setWorkflowStatus("Registering voters");
         break;
       case "1":
-        setWorkflowStatus("Proposals Registration Started");
+        setWorkflowStatus("Proposals registration started");
         break;
       case "2":
-        setWorkflowStatus("Proposals Registration Ended");
+        setWorkflowStatus("Proposals registration ended");
         break;
       case "3":
-        setWorkflowStatus("Voting Session Started");
+        setWorkflowStatus("Voting session started");
         break;
       case "4":
-        setWorkflowStatus("VotingSessionEnded");
+        setWorkflowStatus("Voting session ended");
         break;
       default:
-        setWorkflowStatus("not sync");
+        setWorkflowStatus("not sync to voting contract");
     }
   }, [props.workflowStatus, props.whitelist, props.userAddress]);
 
