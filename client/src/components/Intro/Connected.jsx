@@ -37,11 +37,25 @@ function Connected(props) {
   return (
     <div>
       <ul>
-        <li>Your address is: {props.userAddress}</li>
-        <li>Are you Wl? {`${isWl}`}</li>
-        <li>Voting contract address: {props.contractAddress}</li>
-        <li>Admin address: {props.adminAddress}</li>
-        <li>State of the voting process: {workflowStatus}</li>
+        <li>
+          Your address is:{" "}
+          <span style={{ fontWeight: "bold" }}>{props.userAddress}</span>
+        </li>
+        <li>
+          Are you Wl? <span style={{ fontWeight: "bold" }}>{`${isWl}`}</span>
+        </li>
+        <li>
+          Voting contract address:{" "}
+          <span style={{ fontWeight: "bold" }}>{props.contractAddress}</span>
+        </li>
+        <li>
+          Admin address:{" "}
+          <span style={{ fontWeight: "bold" }}>{props.adminAddress}</span>
+        </li>
+        <li>
+          State of the voting process:{" "}
+          <span style={{ fontWeight: "bold" }}>{workflowStatus}</span>
+        </li>
       </ul>
     </div>
   );

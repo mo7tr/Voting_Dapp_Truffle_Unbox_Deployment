@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 function AdminPanel(props) {
   const [voterAddress, setVoterAddress] = useState("");
 
-  const handleOnClickRegisterVoterButton = async () => {
-    console.log(
-      "handleOnClickRegisterVoterButton voterAddress=>",
-      voterAddress
-    );
+  const handleClickRegisterVoterButton = async () => {
     const transac = await props.contract.methods
       .registerVoters(voterAddress)
       .send({ from: props.accounts[0] });
@@ -19,11 +15,52 @@ function AdminPanel(props) {
     setVoterAddress("");
   };
 
+  const handleClickStartProposalsRegistration = async () => {
+    const transac = await props.contract.methods
+      .startProposalsRegistration()
+      .send({ from: props.accounts[0] });
+    console.log(
+      "Workflow status change to: ",
+      transac.events.WorkflowStatusChange.returnValues._newStatus
+    );
+  };
+
+  const handleClickEndProposalsRegistration = async () => {
+    const transac = await props.contract.methods
+      .endProposalsRegistration()
+      .send({ from: props.accounts[0] });
+    console.log(
+      "Workflow status change to: ",
+      transac.events.WorkflowStatusChange.returnValues._newStatus
+    );
+  };
+
+  const handleClickStartVotingSession = async () => {
+    const transac = await props.contract.methods
+      .startVotingSession()
+      .send({ from: props.accounts[0] });
+    console.log(
+      "Workflow status change to: ",
+      transac.events.WorkflowStatusChange.returnValues._newStatus
+    );
+  };
+
+  const handleClickEndVotingSession = async () => {
+    console.log("handleClick end voting session");
+    const transac = await props.contract.methods
+      .endVotingSession()
+      .send({ from: props.accounts[0] });
+    console.log(
+      "Workflow status change to: ",
+      transac.events.WorkflowStatusChange.returnValues._newStatus
+    );
+  };
+
   return (
     <div>
       <h2>📱 Admin dashboard</h2>
       <div style={{ marginTop: 15 }}>
-        <p style={{ fontWeight: "bold" }}>Register Voter</p>
+        <p style={{ fontWeight: "bold" }}>Register Voter:</p>
         <input
           style={{ width: "60%" }}
           placeholder={"Set voter address..."}
@@ -31,12 +68,58 @@ function AdminPanel(props) {
           onChange={(e) => setVoterAddress(e.target.value)}
         />
         <button
-          style={{ marginLeft: 10 }}
+          style={{ marginLeft: 10, width: "30%" }}
           onClick={() => {
-            handleOnClickRegisterVoterButton();
+            handleClickRegisterVoterButton();
           }}
         >
           Add new voter to whitelist
+        </button>
+      </div>
+      <div style={{ marginTop: 15 }}>
+        <p style={{ fontWeight: "bold" }}>Start proposals registration:</p>
+        <button
+          style={{ width: "30%" }}
+          onClick={() => {
+            handleClickStartProposalsRegistration();
+          }}
+        >
+          Start proposals registration
+        </button>
+      </div>
+
+      <div style={{ marginTop: 15 }}>
+        <p style={{ fontWeight: "bold" }}>End proposals registration:</p>
+        <button
+          style={{ width: "30%" }}
+          onClick={() => {
+            handleClickEndProposalsRegistration();
+          }}
+        >
+          End proposals registration
+        </button>
+      </div>
+
+      <div style={{ marginTop: 15 }}>
+        <p style={{ fontWeight: "bold" }}>Start voting session:</p>
+        <button
+          style={{ width: "30%" }}
+          onClick={() => {
+            handleClickStartVotingSession();
+          }}
+        >
+          Start voting session
+        </button>
+      </div>
+      <div style={{ marginTop: 15 }}>
+        <p style={{ fontWeight: "bold" }}>End voting session:</p>
+        <button
+          style={{ width: "30%" }}
+          onClick={() => {
+            handleClickEndVotingSession();
+          }}
+        >
+          End voting session
         </button>
       </div>
       <hr />
