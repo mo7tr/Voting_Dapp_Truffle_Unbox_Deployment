@@ -5,12 +5,12 @@ function Connected(props) {
   const [isWl, setIsWl] = useState(false);
 
   useEffect(() => {
+    let isWL = false;
     for (let i = 0; i < props.whitelist.length; i++) {
       if (props.whitelist[i] === props.userAddress.toString()) {
-        setIsWl(true);
-      } else {
-        setIsWl(false);
+        isWL = true;
       }
+      setIsWl(isWL);
     }
 
     switch (props.workflowStatus) {

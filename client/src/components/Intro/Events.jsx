@@ -1,30 +1,105 @@
+import { useEffect, useState } from "react";
+
 function Events(props) {
+  const [workflowListToDisplay, setWorkflowListToDisplay] = useState(null);
+
+  useEffect(() => {
+    let workflowStatusChangeEvents = props.workflowStatusChangeEvents;
+
+    if (workflowStatusChangeEvents && workflowStatusChangeEvents.length === 1) {
+      workflowStatusChangeEvents[0].returnValues._previousStatus =
+        "Registering voters";
+      workflowStatusChangeEvents[0].returnValues._newStatus =
+        "Proposals registration started";
+    } else if (
+      workflowStatusChangeEvents &&
+      workflowStatusChangeEvents.length === 2
+    ) {
+      workflowStatusChangeEvents[0].returnValues._previousStatus =
+        "Registering voters";
+      workflowStatusChangeEvents[0].returnValues._newStatus =
+        "Proposals registration started";
+      workflowStatusChangeEvents[1].returnValues._previousStatus =
+        "Proposals registration started";
+      workflowStatusChangeEvents[1].returnValues._newStatus =
+        "Proposals registration ended";
+    } else if (
+      workflowStatusChangeEvents &&
+      workflowStatusChangeEvents.length === 3
+    ) {
+      workflowStatusChangeEvents[0].returnValues._previousStatus =
+        "Registering voters";
+      workflowStatusChangeEvents[0].returnValues._newStatus =
+        "Proposals registration started";
+      workflowStatusChangeEvents[1].returnValues._previousStatus =
+        "Proposals registration started";
+      workflowStatusChangeEvents[1].returnValues._newStatus =
+        "Proposals registration ended";
+      workflowStatusChangeEvents[2].returnValues._previousStatus =
+        "Proposals registration ended";
+      workflowStatusChangeEvents[2].returnValues._newStatus =
+        "Voting session started";
+    } else if (
+      workflowStatusChangeEvents &&
+      workflowStatusChangeEvents.length === 4
+    ) {
+      workflowStatusChangeEvents[0].returnValues._previousStatus =
+        "Registering voters";
+      workflowStatusChangeEvents[0].returnValues._newStatus =
+        "Proposals registration started";
+      workflowStatusChangeEvents[1].returnValues._previousStatus =
+        "Proposals registration started";
+      workflowStatusChangeEvents[1].returnValues._newStatus =
+        "Proposals registration ended";
+      workflowStatusChangeEvents[2].returnValues._previousStatus =
+        "Proposals registration ended";
+      workflowStatusChangeEvents[2].returnValues._newStatus =
+        "Voting session started";
+      workflowStatusChangeEvents[3].returnValues._previousStatus =
+        "Voting session started";
+      workflowStatusChangeEvents[3].returnValues._newStatus =
+        "Voting session ended";
+    }
+
+    setWorkflowListToDisplay(workflowStatusChangeEvents);
+  }, [props.workflowStatusChangeEvents]);
+
+  let workflowStatusEventsDisplay = (
+    <p>No change done by the admin ➡️ Still in voter registration process!</p>
+  );
+
+  if (workflowListToDisplay && workflowListToDisplay.length > 0) {
+    workflowStatusEventsDisplay = (
+      <ol>
+        {workflowListToDisplay.map((workflowEvent, i) => (
+          <li key={i}>
+            {workflowEvent.returnValues._previousStatus} ➡️{" "}
+            {workflowEvent.returnValues._newStatus}
+          </li>
+        ))}
+      </ol>
+    );
+  }
+
   return (
     <>
       <h2>✍️ Events listing</h2>
       <p>We have no secret for you!</p>
 
       <details>
-        <summary>Whitelist</summary>
-        <p>Here are all the whitelisted addresses:</p>
-        <ul>
-          {props.whitelist.map((address, i) => (
-            <li key={i}>{address}</li>
-          ))}
-        </ul>
+        <summary>Voting process progress</summary>
+        <p>Follow the progress of the voting process:</p>
+        {workflowStatusEventsDisplay}
       </details>
 
       <details>
-        <summary>Ganache and MetaMask</summary>
-        <p>
-          Open a terminal and run Ganache, a simulated Ethereum blockchain on
-          your machine.
-        </p>
-        <code>$ ganache</code>
-        <p>
-          From the list of generated private keys, import the first one to
-          MetaMask.
-        </p>
+        <summary>Whitelist</summary>
+        <p>Here are all the whitelisted addresses:</p>
+        <ul>
+          {props.whitelist.map((address, j) => (
+            <li key={j}>{address}</li>
+          ))}
+        </ul>
       </details>
 
       <details>
