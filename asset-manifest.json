@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/Voting_Dapp_Truffle_Unbox_Deployment/static/css/main.8a1fbc45.chunk.css",
+    "main.js": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/main.2187c68d.chunk.js",
+    "main.js.map": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/main.2187c68d.chunk.js.map",
+    "runtime-main.js": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/runtime-main.feeb6aa1.js",
+    "runtime-main.js.map": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/runtime-main.feeb6aa1.js.map",
+    "static/js/2.21c8e0e1.chunk.js": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/2.21c8e0e1.chunk.js",
+    "static/js/2.21c8e0e1.chunk.js.map": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/2.21c8e0e1.chunk.js.map",
+    "index.html": "/Voting_Dapp_Truffle_Unbox_Deployment/index.html",
+    "static/css/main.8a1fbc45.chunk.css.map": "/Voting_Dapp_Truffle_Unbox_Deployment/static/css/main.8a1fbc45.chunk.css.map",
+    "static/js/2.21c8e0e1.chunk.js.LICENSE.txt": "/Voting_Dapp_Truffle_Unbox_Deployment/static/js/2.21c8e0e1.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.feeb6aa1.js",
+    "static/js/2.21c8e0e1.chunk.js",
+    "static/css/main.8a1fbc45.chunk.css",
+    "static/js/main.2187c68d.chunk.js"
+  ]
+}
