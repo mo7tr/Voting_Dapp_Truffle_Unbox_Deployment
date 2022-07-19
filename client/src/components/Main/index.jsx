@@ -142,6 +142,7 @@ function Intro() {
         accounts={accounts}
         web3={web3}
         proposalRegisteredEvents={proposalRegisteredEvents}
+        workflowStatus={workflowStatus}
       />
       <hr />
       <Events

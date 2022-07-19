@@ -1,6 +1,9 @@
 import { useState } from "react";
 import PopupVoter from "./Popup/PopupVoter";
 import PopupProposal from "./Popup/PopupProposal";
+import PopupError from "./Popup/PopupError";
+import PopupSuccess from "./Popup/PopupSuccess";
+import PopupWinner from "./Popup/PopupWinner";
 
 function UserPanel(props) {
   const [description, setDescription] = useState("");
@@ -8,6 +11,7 @@ function UserPanel(props) {
   const [voterAddress, setVoterAddress] = useState("");
   const [isOpenGetVoter, setIsOpenGetVoter] = useState(false);
   const [isOpenGetProposal, setIsOpenGetProposal] = useState(false);
+  const [isOpenError, setIsOpenError] = useState(false);
   const [isVoterWl, setIsVoterWl] = useState(null);
   const [hasVoted, setHasVoted] = useState(null);
   const [whichProposal, setWhichProposal] = useState("");
@@ -16,6 +20,26 @@ function UserPanel(props) {
   const [isProposalValid, setIsProposalValid] = useState(null);
   const [proposalDescription, setProposalDescription] = useState("");
   const [voteCount, setVoteCount] = useState("");
+  const [isErrorUser, setIsErrorUser] = useState(null);
+  const [errorUser, setErrorUser] = useState("");
+  const [isSuccessUser, setIsSuccessUser] = useState(null);
+  const [successUser, setSuccessUser] = useState("");
+  const [isOpenSuccess, setIsOpenSuccess] = useState(false);
+  const [isOpenWinner, setIsOpenWinner] = useState(false);
+  const [winnerDescription, setWinnerDescription] = useState("");
+  const [winnerVoteCount, setWinnerVoteCount] = useState("");
+  const [winnerProposalId, setWinnerProposalId] = useState("");
+  const [isWinner, setIsWinner] = useState(false);
+
+  const togglePopupWinner = () => {
+    setIsOpenWinner(!isOpenWinner);
+    if (isOpenGetVoter) {
+      setWinnerVoteCount("");
+      setWinnerProposalId("");
+      setWinnerDescription("");
+      setIsWinner(null);
+    }
+  };
 
   const togglePopupGetVoter = () => {
     setIsOpenGetVoter(!isOpenGetVoter);
@@ -37,29 +61,83 @@ function UserPanel(props) {
     }
   };
 
-  const handleClickRegisterProposals = async () => {
-    if (typeof description === "string") {
-      const transac = await props.contract.methods
-        .addProposal(description)
-        .send({ from: props.accounts[0] });
-      console.log(
-        "A new proposition has been registered: ",
-        transac.events.ProposalRegistered.returnValues._proposalId,
-        transac.events.ProposalRegistered.returnValues._description
-      );
-      setDescription("");
+  const togglePopupError = () => {
+    setIsOpenError(!isOpenError);
+    if (isOpenError) {
+      setIsErrorUser(null);
+      setErrorUser("");
     }
   };
 
+  const togglePopupSuccess = () => {
+    setIsOpenSuccess(!isOpenSuccess);
+    if (isOpenSuccess) {
+      setIsSuccessUser(null);
+      setSuccessUser("");
+    }
+  };
+
+  const handleClickRegisterProposals = async () => {
+    if (description.length > 0) {
+      try {
+        const transac = await props.contract.methods
+          .addProposal(description)
+          .send({ from: props.accounts[0] });
+        console.log(
+          "A new proposition has been registered: ",
+          transac.events.ProposalRegistered.returnValues._proposalId,
+          transac.events.ProposalRegistered.returnValues._description
+        );
+        setIsSuccessUser(true);
+        setSuccessUser("Proposal registered!");
+        togglePopupSuccess();
+      } catch (e) {
+        console.log(e);
+        setIsErrorUser(true);
+        setErrorUser(
+          "Transaction rejected: If you are whitelisted, it might be an inadequate workflow status!"
+        );
+        togglePopupError();
+      }
+    } else {
+      setIsErrorUser(true);
+      setErrorUser("description can't be an empty string");
+      togglePopupError();
+    }
+    setDescription("");
+  };
+
   const handleClickVote = async () => {
-    const transac = await props.contract.methods
-      .setVote(ID)
-      .send({ from: props.accounts[0] });
-    console.log(
-      "A new vote has been set: ",
-      transac.events.Voted.returnValues._voterAddress,
-      transac.events.Voted.returnValues._proposalId
-    );
+    if (Number(ID) < props.proposalRegisteredEvents.length && Number(ID) >= 0) {
+      try {
+        const transac = await props.contract.methods
+          .setVote(ID)
+          .send({ from: props.accounts[0] });
+        console.log(
+          "A new vote has been set: ",
+          transac.events.Voted.returnValues._voterAddress,
+          transac.events.Voted.returnValues._proposalId
+        );
+        setIsSuccessUser(true);
+        setSuccessUser(
+          `Vote registered for proposal ID n° ${transac.events.Voted.returnValues._proposalId}`
+        );
+        togglePopupSuccess();
+      } catch (e) {
+        console.log(e);
+        setIsErrorUser(true);
+        setErrorUser(
+          "Transaction rejected: If you are whitelisted, it might be an inadequate workflow status or you already Voted!"
+        );
+        togglePopupError();
+      }
+    } else {
+      setIsErrorUser(true);
+      setErrorUser(
+        `Proposal ID invalid, Must be between 0 and ${props.proposalRegisteredEvents.length}`
+      );
+      togglePopupError();
+    }
     setID("");
   };
 
@@ -81,7 +159,6 @@ function UserPanel(props) {
   };
 
   const handleClickGetOneProposal = async () => {
-    console.log(Number(oneProposal));
     if (
       Number(oneProposal) < props.proposalRegisteredEvents.length &&
       Number(oneProposal) >= 0
@@ -97,6 +174,32 @@ function UserPanel(props) {
     } else {
       setIsProposalValid(false);
       togglePopupGetProposal();
+    }
+  };
+
+  const handleClickGetWinner = async () => {
+    console.log("workflowstatus =>", props.workflowStatus);
+    if (props.workflowStatus === "4") {
+      const winningProposal = await props.contract.methods
+        .winningProposalID()
+        .call({ from: props.accounts[0] });
+
+      console.log("winning proposal =>", winningProposal);
+
+      const winner = await props.contract.methods
+        .getOneProposal(winningProposal)
+        .call({ from: props.accounts[0] });
+
+      console.log("winner => ", winner);
+      setIsWinner(true);
+      setWinnerDescription(winner.description);
+      setWinnerVoteCount(winner.voteCount);
+      setWinnerProposalId(winningProposal);
+      togglePopupWinner();
+    } else {
+      setIsErrorUser(true);
+      setErrorUser("Winner not decided Yet");
+      togglePopupError();
     }
   };
 
@@ -119,7 +222,7 @@ function UserPanel(props) {
             handleClickRegisterProposals();
           }}
         >
-          Add new proposal to vote
+          Register your proposal
         </button>
       </div>
 
@@ -139,6 +242,20 @@ function UserPanel(props) {
         >
           Vote!
         </button>
+        {isOpenError && (
+          <PopupError
+            errorUser={errorUser}
+            togglePopupError={togglePopupError}
+            isErrorUser={isErrorUser}
+          />
+        )}
+        {isOpenSuccess && (
+          <PopupSuccess
+            successUser={successUser}
+            togglePopupSuccess={togglePopupSuccess}
+            isSuccessUser={isSuccessUser}
+          />
+        )}
       </div>
 
       <div style={{ marginTop: 15 }}>
@@ -192,6 +309,27 @@ function UserPanel(props) {
             proposalDescription={proposalDescription}
             voteCount={voteCount}
             togglePopupGetProposal={togglePopupGetProposal}
+          />
+        )}
+      </div>
+
+      <div style={{ marginTop: 15, alignContent: "center" }}>
+        <p style={{ fontWeight: "bold" }}>And the winner is ...</p>
+        <button
+          style={{ width: "30%" }}
+          onClick={() => {
+            handleClickGetWinner();
+          }}
+        >
+          Get Winner
+        </button>
+        {isOpenWinner && (
+          <PopupWinner
+            isWinner={isWinner}
+            winnerProposalId={winnerProposalId}
+            winnerDescription={winnerDescription}
+            winnerVoteCount={winnerVoteCount}
+            togglePopupWinner={togglePopupWinner}
           />
         )}
       </div>
