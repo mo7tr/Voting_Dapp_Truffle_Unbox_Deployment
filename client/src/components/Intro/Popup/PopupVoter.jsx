@@ -4,7 +4,7 @@ const PopupVoter = (props) => {
     popupDisplay = (
       <>
         <strong className="popup-title">Voter informations 🔦</strong>
-        <hr />
+        <hr className="popup-hr" />
         <p>
           Is the voter Whitelisted?{" "}
           <span style={{ fontWeight: "bold" }}>{`${props.isVoterWl}`}</span>
@@ -19,7 +19,7 @@ const PopupVoter = (props) => {
         </p>
       </>
     );
-  } else if (!props.popupDisplay) {
+  } else if (!props.isEthAddress) {
     popupDisplay = (
       <p style={{ textAlign: "center", fontSize: "2.2rem" }}>
         🧨 This is not a valid ethereum address 🧨
@@ -30,7 +30,7 @@ const PopupVoter = (props) => {
   return (
     <div className="popup-box">
       <div className="box">
-        <span className="close-icon" onClick={props.togglePopup}>
+        <span className="close-icon" onClick={props.togglePopupGetVoter}>
           x
         </span>
         {popupDisplay}

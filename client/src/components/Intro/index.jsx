@@ -137,7 +137,12 @@ function Intro() {
         <div></div>
       )}
 
-      <UserPanel contract={contract} accounts={accounts} web3={web3} />
+      <UserPanel
+        contract={contract}
+        accounts={accounts}
+        web3={web3}
+        proposalRegisteredEvents={proposalRegisteredEvents}
+      />
       <hr />
       <Events
         whitelist={whitelist}

@@ -156,3 +156,7 @@ hr {
 .popup-title {
   font-size: 2.2rem;
 }
+
+.popup-hr {
+  margin: 1rem;
+}
