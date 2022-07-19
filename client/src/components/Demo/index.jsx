@@ -1,5 +1,4 @@
 //import { useState } from "react";
-import Title from "./Title";
 import Cta from "./Cta";
 //import Contract from "./Contract";
 //import ContractBtns from "./ContractBtns";
@@ -19,12 +18,7 @@ function Demo() {
     </>
   );
 
-  return (
-    <div className="demo">
-      <Title />
-      {demo}
-    </div>
-  );
+  return <div className="demo">{demo}</div>;
 }
 
 export default Demo;

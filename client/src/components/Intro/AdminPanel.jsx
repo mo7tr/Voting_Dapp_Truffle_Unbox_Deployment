@@ -1,23 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function AdminPanel(props) {
   const [voterAddress, setVoterAddress] = useState("");
 
-  const handleClickRegisterVoterButton = async () => {
-    const transac = await props.contract.methods
-      .registerVoters(voterAddress)
-      .send({ from: props.accounts[0] });
-    console.log(
-      "A new voter has been registered: ",
-      transac.events.VoterRegistered.returnValues._voterAddress
-    );
+  const handleClickAddVoterButton = async () => {
+    if (props.web3.utils.isAddress(voterAddress)) {
+      const transac = await props.contract.methods
+        .addVoter(voterAddress)
+        .send({ from: props.accounts[0] });
+      console.log(
+        "A new voter has been registered: ",
+        transac.events.VoterRegistered.returnValues._voterAddress
+      );
 
-    setVoterAddress("");
+      setVoterAddress("");
+    }
   };
 
   const handleClickStartProposalsRegistration = async () => {
     const transac = await props.contract.methods
-      .startProposalsRegistration()
+      .startProposalsRegistering()
       .send({ from: props.accounts[0] });
     console.log(
       "Workflow status change to: ",
@@ -27,7 +29,7 @@ function AdminPanel(props) {
 
   const handleClickEndProposalsRegistration = async () => {
     const transac = await props.contract.methods
-      .endProposalsRegistration()
+      .endProposalsRegistering()
       .send({ from: props.accounts[0] });
     console.log(
       "Workflow status change to: ",
@@ -46,7 +48,6 @@ function AdminPanel(props) {
   };
 
   const handleClickEndVotingSession = async () => {
-    console.log("handleClick end voting session");
     const transac = await props.contract.methods
       .endVotingSession()
       .send({ from: props.accounts[0] });
@@ -58,7 +59,7 @@ function AdminPanel(props) {
 
   return (
     <div>
-      <h2>📱 Admin dashboard</h2>
+      <h2>🕹 Admin dashboard</h2>
       <div style={{ marginTop: 15 }}>
         <p style={{ fontWeight: "bold" }}>Register Voter:</p>
         <input
@@ -70,7 +71,7 @@ function AdminPanel(props) {
         <button
           style={{ marginLeft: 10, width: "30%" }}
           onClick={() => {
-            handleClickRegisterVoterButton();
+            handleClickAddVoterButton();
           }}
         >
           Add new voter to whitelist

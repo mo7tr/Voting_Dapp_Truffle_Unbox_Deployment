@@ -6,35 +6,32 @@ import NoticeNoArtifact from "./NoticeNoArtifact";
 import NoticeWrongNetwork from "./NoticeWrongNetwork";
 import Events from "./Events";
 import AdminPanel from "./AdminPanel";
-//import Desc from "./Desc";
+import UserPanel from "./UserPanel";
 
 function Intro() {
   const {
     state,
-    state: { contract, accounts, address },
+    state: { contract, accounts, address, web3 },
   } = useEth();
 
   const [userAddress, setUserAddress] = useState(null);
-
   const [contractAddress, setContractAddress] = useState(null);
-
   const [adminAddress, setAdminAddress] = useState(null);
-
   const [workflowStatus, setWorkflowStatus] = useState(null);
-
-  const [workflowStatusChangeEvents, setWorkflowStatusChangeEvents] =
-    useState(null);
-
-  console.log("workflowStatusChangeEvent =>", workflowStatusChangeEvents);
-
+  const [workflowStatusChangeEvents, setWorkflowStatusChangeEvents] = useState(
+    []
+  );
   const [whitelist, setWhitelist] = useState([]);
-  console.log("whitelist =>", whitelist);
+  const [proposalRegisteredEvents, setProposalRegisteredEvents] = useState([]);
+  const [votedEvents, setVotedEvents] = useState([]);
 
   useEffect(() => {
     async function getDetails() {
       let owner;
       let workflowEvents;
       let voterRegisteredEvents;
+      let proposalEvents;
+      let votes;
 
       let options1 = {
         fromBlock: 0, //Number || "earliest" || "pending" || "latest"
@@ -52,8 +49,6 @@ function Intro() {
           "WorkflowStatusChange",
           options1
         );
-
-        console.log("workflowEvents =>", workflowEvents);
 
         contract.events.WorkflowStatusChange(options2).on("data", (event) => {
           workflowEvents.push(event);
@@ -79,6 +74,27 @@ function Intro() {
           console.log("### whitelist events listener");
         });
 
+        proposalEvents = await contract.getPastEvents(
+          "ProposalRegistered",
+          options1
+        );
+
+        contract.events.ProposalRegistered(options2).on("data", (event) => {
+          proposalEvents.push(event);
+          console.log("proposal listener proposalEvents =>", proposalEvents);
+          setProposalRegisteredEvents(proposalEvents);
+          console.log("### proposal events listener");
+        });
+
+        votes = await contract.getPastEvents("Voted", options1);
+
+        contract.events.Voted(options2).on("data", (event) => {
+          votes.push(event);
+          console.log("vote listener votes =>", votes);
+          setVotedEvents(votes);
+          console.log("### vote events listener");
+        });
+
         setWhitelist(wlAddresses);
         setUserAddress(accounts.toString());
         setContractAddress(address);
@@ -91,6 +107,8 @@ function Intro() {
         } else {
           setWorkflowStatus("0");
         }
+        setProposalRegisteredEvents(proposalEvents);
+        setVotedEvents(votes);
       }
     }
     getDetails();
@@ -114,16 +132,20 @@ function Intro() {
       )}
       <hr />
       {userAddress === adminAddress ? (
-        <AdminPanel contract={contract} accounts={accounts} />
+        <AdminPanel contract={contract} accounts={accounts} web3={web3} />
       ) : (
         <div></div>
       )}
+
+      <UserPanel contract={contract} accounts={accounts} web3={web3} />
+      <hr />
       <Events
         whitelist={whitelist}
         workflowStatusChangeEvents={workflowStatusChangeEvents}
-        // accounts={accounts}
+        proposalRegisteredEvents={proposalRegisteredEvents}
+        votedEvents={votedEvents}
+        web3={web3}
       />
-      {/* <Desc /> */}
     </div>
   );
 }
